@@ -111,4 +111,16 @@ public class DiagramGwt implements Diagram {
 		return Collections.<AutocompletionText> emptyList();
 	}
 
+	@Override
+	public void setCustomDrawingsCode(String customDrawingsCode) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String getCustomDrawingsCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -32,11 +32,14 @@ import com.baselet.gwt.client.clipboard.ClipboardShortcutWrapper;
 import com.baselet.gwt.client.element.DiagramGwt;
 import com.baselet.gwt.client.file.FileChangeNotifier;
 import com.baselet.gwt.client.keyboard.Shortcut;
+import com.baselet.gwt.client.logging.CustomLogger;
+import com.baselet.gwt.client.logging.CustomLoggerFactory;
 import com.baselet.gwt.client.view.EventHandlingUtils.EventHandlingTarget;
 import com.baselet.gwt.client.view.interfaces.AutoresizeScrollDropTarget;
 import com.baselet.gwt.client.view.interfaces.HasScrollPanel;
 import com.baselet.gwt.client.view.widgets.MenuPopup;
 import com.baselet.gwt.client.view.widgets.MenuPopup.MenuPopupItem;
+import com.baselet.gwt.client.view.widgets.propertiespanel.CustomDrawingsTextArea;
 import com.baselet.gwt.client.view.widgets.propertiespanel.PropertiesTextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -44,13 +47,13 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -60,6 +63,7 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 
 	protected DrawCanvas canvas = new DrawCanvas();
 	protected boolean cursorWasMovedDuringDrag; // check if cursor was actually moved
+	private static final CustomLogger log = CustomLoggerFactory.getLogger(DrawPanel.class);
 
 	SelectorNew selector;
 
@@ -74,6 +78,7 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 	protected final MainView mainView;
 
 	PropertiesTextArea propertiesPanel;
+	CustomDrawingsTextArea customDrawingsPanel;
 
 	private MenuPopup elementContextMenu;
 	private MenuPopup diagramContextMenu;
@@ -165,11 +170,12 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 		}
 	}
 
-	public DrawPanel(final MainView mainView, final PropertiesTextArea propertiesPanel) {
+	public DrawPanel(final MainView mainView, final PropertiesTextArea propertiesPanel, CustomDrawingsTextArea customDrawingsPanel) {
 		this.setStylePrimaryName("canvasFocusPanel");
 
 		this.mainView = mainView;
 		this.propertiesPanel = propertiesPanel;
+		this.customDrawingsPanel = customDrawingsPanel;
 
 		selector = new SelectorNew(diagram) {
 			@Override
@@ -239,9 +245,11 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 		List<GridElement> elements = selector.getSelectedElements();
 		if (!elements.isEmpty()) { // always set properties text of latest selected element (so you also have an element in the prop panel even if you have an active multiselect)
 			propertiesPanel.setGridElement(elements.get(elements.size() - 1), DrawPanel.this);
+			customDrawingsPanel.setGridElement(elements.get(elements.size() - 1), DrawPanel.this);
 		}
 		else {
 			propertiesPanel.setGridElement(diagram, DrawPanel.this);
+			customDrawingsPanel.setGridElement(diagram, DrawPanel.this);
 		}
 		redraw(true);
 	}
@@ -317,11 +325,11 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 			int elementWidth = getOffsetWidth();
 			if (height > elementHeight) {
 				// Less space due to visible vertical scrollbar
-				width -= (scrollPanel.getScrollbarSize()[1]);
+				width -= scrollPanel.getScrollbarSize()[1];
 			}
 			if (width > elementWidth) {
 				// Less space due to visible horizontal scrollbar
-				height -= (scrollPanel.getScrollbarSize()[0]);
+				height -= scrollPanel.getScrollbarSize()[0];
 			}
 
 			canvas.clearAndSetSize(width, height);
@@ -404,7 +412,7 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 			ge.dragEnd();
 		}
 		if (selector.isLassoActive()) {
-			selector.selectElementsInsideLasso(this.getDiagram().getGridElements());
+			selector.selectElementsInsideLasso(getDiagram().getGridElements());
 		}
 		redraw(true);
 	}
@@ -559,7 +567,7 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 		else if (Shortcut.DISABLE_STICKING.matches(event)) {
 			SharedConfig.getInstance().setStickingEnabled(false);
 		}
-		else if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_TAB) {
+		else if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_TAB) {
 			// Don't do anything on TAB key down
 		}
 		else {
@@ -572,13 +580,13 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 		}
 	}
 
-    public static native void clearSelection() /*-{
-        if (window.getSelection) {
-            window.getSelection().removeAllRanges();
-        } else if (document.selection) {
-            document.selection.empty();
-        }
-    }-*/;
+	public static native void clearSelection() /*-{
+												if (window.getSelection) {
+												window.getSelection().removeAllRanges();
+												} else if (document.selection) {
+												document.selection.empty();
+												}
+												}-*/;
 
 	@Override
 	public void handleKeyUp(KeyUpEvent event) {
