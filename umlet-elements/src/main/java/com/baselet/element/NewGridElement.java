@@ -145,7 +145,10 @@ public abstract class NewGridElement implements GridElement {
 
 	private void parseCustomDrawings() {
 		if (customDrawingsCode != null && !customDrawingsCode.isEmpty()) {
-			CustomDrawingParserImpl.parse(getCustomDrawingsCode(), state.getGridElementSize().getWidth(), state.getGridElementSize().getHeight(), state.getDrawer());
+			List<String> customDrawingsLines = Arrays.asList(customDrawingsCode.split("\n", -1));
+			for (String customDrawingsLine : customDrawingsLines) {
+				CustomDrawingParserImpl.parse(customDrawingsLine, state.getGridElementSize().getWidth(), state.getGridElementSize().getHeight(), state.getDrawer());
+			}
 		}
 	}
 
