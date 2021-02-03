@@ -38,35 +38,14 @@ public class ElementFactoryGwt extends ElementFactory {
 
 		element.init(rect, panelAttributes, additionalPanelAttributes, new ComponentGwt(element), handler);
 		element.setPanelAttributes(panelAttributes);
+		if (customDrawingsCode != null && !customDrawingsCode.isEmpty()) {
+			element.setCustomDrawingsCode(customDrawingsCode);
+		}
 		return element;
 	}
 
 	public static GridElement create(ElementId id, Rectangle rect, String panelAttributes, String additionalPanelAttributes, final Diagram diagram) {
-		final NewGridElement element = createAssociatedGridElement(id);
-
-		DrawHandlerInterface handler = new DrawHandlerInterface() {
-			@Override
-			public void updatePropertyPanel() {}
-
-			@Override
-			public int getGridSize() {
-				return SharedConstants.DEFAULT_GRID_SIZE; // GWT doesnt use own zoom implementation but relies on browser zoom
-			}
-
-			@Override
-			public boolean isInitialized() {
-				return true; // GWT initializes elements at once, therefore it's always initialized
-			}
-
-			@Override
-			public StickableMap getStickableMap() {
-				return diagram.getStickables(element);
-			}
-		};
-
-		element.init(rect, panelAttributes, additionalPanelAttributes, new ComponentGwt(element), handler);
-		element.setPanelAttributes(panelAttributes);
-		return element;
+		return create(id, rect, panelAttributes, additionalPanelAttributes, "", diagram);
 	}
 
 	public static GridElement create(GridElement src, final Diagram targetDiagram) {

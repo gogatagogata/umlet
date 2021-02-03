@@ -17,7 +17,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiConstructor;
 
 public class CustomDrawingsTextArea extends MySuggestBox {
-	private static final CustomLogger log = CustomLoggerFactory.getLogger(CustomDrawingsTextArea.class);
 
 	private static final String DEFAULT_HELPTEXT = "Space for custom drawings code";
 
@@ -39,8 +38,6 @@ public class CustomDrawingsTextArea extends MySuggestBox {
 			@Override
 			public void onValueChange(String value) {
 				if (gridElement != null) {
-					// gridElement.setPanelAttributes(getValue());
-					log.info("@!!!! " + getValue());
 					gridElement.setCustomDrawingsCode(getValue());
 				}
 				activePanel.redraw();

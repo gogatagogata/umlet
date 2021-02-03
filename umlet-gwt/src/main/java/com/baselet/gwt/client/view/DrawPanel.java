@@ -63,7 +63,6 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 
 	protected DrawCanvas canvas = new DrawCanvas();
 	protected boolean cursorWasMovedDuringDrag; // check if cursor was actually moved
-	private static final CustomLogger log = CustomLoggerFactory.getLogger(DrawPanel.class);
 
 	SelectorNew selector;
 

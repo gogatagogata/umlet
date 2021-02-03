@@ -24,8 +24,6 @@ public class DrawPanelDiagram extends DrawPanel {
 
 	private boolean tempInvalid;
 
-	private static final CustomLogger log = CustomLoggerFactory.getLogger(DiagramXmlParser.class);
-
 	public DrawPanelDiagram(MainView mainView, PropertiesTextArea propertiesPanel, CustomDrawingsTextArea customDrawingsPanel) {
 		super(mainView, propertiesPanel, customDrawingsPanel);
 	}
