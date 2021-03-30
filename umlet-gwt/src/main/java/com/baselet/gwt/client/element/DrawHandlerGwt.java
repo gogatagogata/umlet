@@ -12,12 +12,12 @@ import com.baselet.diagram.draw.helper.ColorOwn;
 import com.baselet.diagram.draw.helper.Style;
 import com.baselet.gwt.client.base.Converter;
 import com.baselet.gwt.client.base.Notification;
-import com.baselet.gwt.client.view.Context2dGwtWrapper;
-import com.baselet.gwt.client.view.Context2dPdfWrapper;
-import com.baselet.gwt.client.view.Context2dWrapper;
 import com.baselet.gwt.client.logging.CustomLogger;
 import com.baselet.gwt.client.logging.CustomLoggerFactory;
 import com.baselet.gwt.client.text.Font;
+import com.baselet.gwt.client.view.Context2dGwtWrapper;
+import com.baselet.gwt.client.view.Context2dPdfWrapper;
+import com.baselet.gwt.client.view.Context2dWrapper;
 import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
 
 public class DrawHandlerGwt extends DrawHandler {
@@ -37,6 +37,7 @@ public class DrawHandlerGwt extends DrawHandler {
 		ctx = context2d;
 		scalingFactor = scaling;
 		scalingIsSet = false;
+		javascriptCodeParser = new JavascriptParserGwt(this);
 	}
 
 	public void setNewScaling(double scalingFactor) {
@@ -105,7 +106,7 @@ public class DrawHandlerGwt extends DrawHandler {
 					}
 					else {
 						ctx.moveTo(0, 0);
-						ctx.arc(0, 0, width / 2, -Math.toRadians(start), -(Math.toRadians(start + extent)), true);
+						ctx.arc(0, 0, width / 2, -Math.toRadians(start), -Math.toRadians(start + extent), true);
 						ctx.lineTo(0, 0);
 						ctx.closePath();
 					}
@@ -371,4 +372,5 @@ public class DrawHandlerGwt extends DrawHandler {
 			}
 		}
 	}
+
 }
