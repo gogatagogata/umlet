@@ -36,7 +36,6 @@ import com.baselet.element.facet.PropertiesParserState;
 import com.baselet.element.facet.Settings;
 import com.baselet.element.facet.common.GroupFacet;
 import com.baselet.element.facet.common.LayerFacet;
-import com.baselet.element.facet.customdrawings.CustomDrawingParserImpl;
 import com.baselet.element.interfaces.Component;
 import com.baselet.element.interfaces.CursorOwn;
 import com.baselet.element.interfaces.DrawHandlerInterface;
@@ -145,10 +144,7 @@ public abstract class NewGridElement implements GridElement {
 
 	private void parseCustomDrawings() {
 		if (customDrawingsCode != null && !customDrawingsCode.isEmpty()) {
-			List<String> customDrawingsLines = Arrays.asList(customDrawingsCode.split("\n", -1));
-			for (String customDrawingsLine : customDrawingsLines) {
-				CustomDrawingParserImpl.parse(customDrawingsLine, state.getGridElementSize().getWidth(), state.getGridElementSize().getHeight(), state.getDrawer());
-			}
+			drawer.getJavascriptCodeParser().parse(customDrawingsCode);
 		}
 	}
 
